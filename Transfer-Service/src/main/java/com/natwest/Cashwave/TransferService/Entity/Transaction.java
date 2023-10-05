@@ -16,8 +16,8 @@ public class Transaction {
     @Id
 
     public String id;
-    public String accountHolderName;
-    public String accountNo;
+    public String receiverName;
+    public String receiverNo;
     public double amount;
     public String description;
     public String fromAccount;
