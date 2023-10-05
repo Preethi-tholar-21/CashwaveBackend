@@ -2,6 +2,7 @@ package com.natwest.Cashwave.UserService.Service;
 
 import com.natwest.Cashwave.UserService.Entity.User;
 import com.natwest.Cashwave.UserService.Repository.UserRepository;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,21 +13,45 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public User addUser(User user)
-    {
+    public User registerUser(User user) {
+        // Perform validation and other business logic if needed
         return userRepository.save(user);
     }
 
-    public ResponseEntity<?> getUser(String userId) {
-        User user = userRepository.findById(userId).orElse(null);
-
-        if (user != null) {
-            // Return the user as a ResponseEntity with HTTP status OK (200)
-            return ResponseEntity.ok(user);
-        } else {
-            // If the user is not found, return a ResponseEntity with HTTP status NOT FOUND (404)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with ID: " + userId);
-        }
+    private String hashPassword(String password, String salt) {
+        // You can use a secure hashing algorithm here (e.g., bcrypt)
+        // For simplicity, let's assume you're using SHA-256
+        String saltedPassword = password + salt;
+        // Perform the hashing (you may want to use a more secure algorithm)
+        return DigestUtils.sha256Hex(saltedPassword);
     }
 
-}
+    public ResponseEntity<User> loginUser(String emailid, String password) {
+        User user = userRepository.findByEmailid(emailid);
+        if (user != null) {
+            String storedSalt = user.getSalt(); // Retrieve the salt from the user's record
+            String storedHashedPIN = user.getSecurity_PIN();
+            if (storedSalt != null && storedHashedPIN != null) {
+                // Calculate the hash of the entered security PIN using the stored salt
+                String calculatedHashedPIN = hashPassword(password, storedSalt);
+
+                // Check if the calculated hash matches the stored hash
+                if (calculatedHashedPIN.equals(storedHashedPIN)) {
+                    return new ResponseEntity<>(user, HttpStatus.OK); // PIN is correct
+                }
+                else {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
+            else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
+
+
+
+    }
+
+
