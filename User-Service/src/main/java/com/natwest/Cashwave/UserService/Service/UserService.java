@@ -51,7 +51,23 @@ public class UserService {
     }
 
 
+    public ResponseEntity<User> getUser(String emailID) {
+        try {
+            User user = userRepository.findByEmailid(emailID);
 
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                // User not found, return an appropriate response, e.g., HttpStatus.NOT_FOUND
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            // Handle any other exceptions that might occur, e.g., database errors
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
+
+}
 
 

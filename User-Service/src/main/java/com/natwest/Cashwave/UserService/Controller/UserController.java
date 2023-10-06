@@ -32,4 +32,10 @@ public class UserController {
         return userService.loginUser(emailid, security_PIN);
     }
 
+    @GetMapping("/getUser/{emailID}")
+    public ResponseEntity<User> getUser(@PathVariable String emailID)
+    {
+        return userService.getUser(emailID);
+    }
+
 }
