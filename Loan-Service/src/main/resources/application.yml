@@ -1,5 +1,5 @@
 server:
-  port: 9091 # Port for the account-service
+  port: 9091 # Port for the loan-service
 
 spring:
   application:

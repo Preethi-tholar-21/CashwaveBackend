@@ -25,12 +25,12 @@ public class TransactionService {
     public ResponseEntity<?> addTransaction(String user_Id, TransactionRequest transactiondetails,String fromAccount)
     {
         ResponseEntity<User> userResponse = restTemplate.getForEntity(
-                "http://localhost:8081/userservice/getUser/" + user_Id,
+                "http://localhost:8081/users/getUser/" + user_Id,
                 User.class
         );
         if(userResponse.getStatusCode()== HttpStatus.OK)
         {
-            ResponseEntity<Account> accountResponse=restTemplate.getForEntity("http://localhost:8082/account/getAccount/"+fromAccount, Account.class);
+            ResponseEntity<Account> accountResponse=restTemplate.getForEntity("http://localhost:8082/accounts/getAccount/"+fromAccount, Account.class);
             if(accountResponse.getStatusCode()==HttpStatus.OK)
             {
                 User user=userResponse.getBody();
@@ -62,7 +62,7 @@ public class TransactionService {
     public ResponseEntity<?> transferAmount(String user_id, TransactionRequest transactiondetails, String fromAccount) {
         try {
             double amount = Double.parseDouble(transactiondetails.getAmount());
-            ResponseEntity<Account> fromaccountResponse=restTemplate.getForEntity("http://localhost:8082/account/getAccount/"+fromAccount,
+            ResponseEntity<Account> fromaccountResponse=restTemplate.getForEntity("http://localhost:8082/accounts/getAccount/"+fromAccount,
                     Account.class);
             String description=transactiondetails.getDescription();
             if(description.equalsIgnoreCase("Creditcard bill")||description.equalsIgnoreCase("Insurance amount")||description.equalsIgnoreCase("Loan emi"))
@@ -79,7 +79,7 @@ public class TransactionService {
                 }
                 double newFromAccountBalance = fromAccount1.getAccountBalance() - amount;
                 ResponseEntity<String> updateFromAccountResponse = restTemplate.exchange(
-                        "http://localhost:8082/account/" + fromAccount + "/updateBalance?balance=" + newFromAccountBalance,
+                        "http://localhost:8082/accounts/" + fromAccount + "/updateBalance?balance=" + newFromAccountBalance,
                         HttpMethod.PUT,
                         null,
                         String.class);
@@ -98,7 +98,7 @@ public class TransactionService {
                 }
             }
             else {
-                ResponseEntity<Account> toaccountResponse=restTemplate.getForEntity("http://localhost:8082/account/getAccount/"+transactiondetails.getReceiverNo(),
+                ResponseEntity<Account> toaccountResponse=restTemplate.getForEntity("http://localhost:8082/accounts/getAccount/"+transactiondetails.getReceiverNo(),
                         Account.class);
 
                 if (fromaccountResponse.getStatusCode()!=HttpStatus.OK || toaccountResponse.getStatusCode()!=HttpStatus.OK) {
@@ -118,13 +118,13 @@ public class TransactionService {
 
                 //add updateBalance code
                 ResponseEntity<String> updateFromAccountResponse = restTemplate.exchange(
-                        "http://localhost:8082/account/" + fromAccount + "/updateBalance?balance=" + newFromAccountBalance,
+                        "http://localhost:8082/accounts/" + fromAccount + "/updateBalance?balance=" + newFromAccountBalance,
                         HttpMethod.PUT,
                         null,
                         String.class);
 
                 ResponseEntity<String> updateToAccountResponse = restTemplate.exchange(
-                        "http://localhost:8082/account/" + toAccount1.getAccountNo() + "/updateBalance?balance=" + newToAccountBalance,
+                        "http://localhost:8082/accounts/" + toAccount1.getAccountNo() + "/updateBalance?balance=" + newToAccountBalance,
                         HttpMethod.PUT,
                         null,
                         String.class);

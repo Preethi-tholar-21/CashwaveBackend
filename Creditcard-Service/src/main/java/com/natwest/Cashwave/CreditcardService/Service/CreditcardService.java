@@ -26,7 +26,7 @@ public class CreditcardService {
 
 
         ResponseEntity<User> userResponse = restTemplate.getForEntity(
-                "http://localhost:8081/userservice/getUser/" + userId,
+                "http://localhost:8080/users/getUser/" + userId,
                 User.class
         );
         if(userResponse.getStatusCode()==HttpStatus.OK)

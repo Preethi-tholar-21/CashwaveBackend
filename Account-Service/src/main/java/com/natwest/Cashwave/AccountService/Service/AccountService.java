@@ -35,7 +35,7 @@ public class AccountService {
     public ResponseEntity<?> addAccount(String user_id, AccountRequest newAccountdetails)
     {
         ResponseEntity<User> userResponse = restTemplate.getForEntity(
-                "http://localhost:8081/userservice/getUser/" + user_id,
+                "http://localhost:8081/users/getUser/" + user_id,
                 User.class
         );
         if(userResponse.getStatusCode() == HttpStatus.OK){
