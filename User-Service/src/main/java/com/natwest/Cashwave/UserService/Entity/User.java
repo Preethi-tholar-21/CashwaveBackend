@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Document(collection = "Users")
 @Data
 @NoArgsConstructor
@@ -22,4 +24,7 @@ public class User {
     private String security_PIN;
     private String  salt;
     private String upi_ID;
+    private String block;
+    private String resetToken;
+    private Date resetTokenExpiryDate;
 }
